@@ -1,17 +1,13 @@
-/*
-variables
-*/
-var model;
+
+var coords = [];
+var m_down = false;
 var canvas;
 var classNames = [];
-var canvas;
-var coords = [];
-var mousePressed = false;
+var model;
 
-/*
-prepare the drawing canvas 
-*/
-$(function() {
+
+
+$( document ).ready(function() {
     canvas = window._canvas = new fabric.Canvas('canvas');
     canvas.backgroundColor = '#ffffff';
     canvas.isDrawingMode = 0;
@@ -21,50 +17,42 @@ $(function() {
     //setup listeners 
     canvas.on('mouse:up', function(e) {
         getFrame();
-        mousePressed = false
+        m_down = false
     });
     canvas.on('mouse:down', function(e) {
-        mousePressed = true
+        m_down = true
     });
     canvas.on('mouse:move', function(e) {
         recordCoor(e)
     });
 })
 
-/*
-set the table of the predictions 
-*/
-function setTable(top5, probs) {
-    //loop over the predictions 
-    for (var i = 0; i < top5.length; i++) {
-        let sym = document.getElementById('sym' + (i + 1))
+
+function setTable(top_class, probs) {
+    for (var i = 0; i < top_class.length; i++) {
+        let sym = document.getElementById('pred_class' + (i + 1))
         let prob = document.getElementById('prob' + (i + 1))
-        sym.innerHTML = top5[i]
+        sym.innerHTML = top_class[i]
         prob.innerHTML = Math.round(probs[i] * 100)
     }
-    //create the pie 
+  
     createPie(".pieID.legend", ".pieID.pie");
 
 }
 
-/*
-record the current drawing coordinates
-*/
+
 function recordCoor(event) {
     var pointer = canvas.getPointer(event.e);
     var posX = pointer.x;
     var posY = pointer.y;
 
-    if (posX >= 0 && posY >= 0 && mousePressed) {
+    if (posX >= 0 && posY >= 0 && m_down) {
         coords.push(pointer)
     }
 }
 
-/*
-get the best bounding box by trimming around the drawing
-*/
+
 function getMinBox() {
-    //get coordinates 
     var coorX = coords.map(function(p) {
         return p.x
     });
@@ -82,30 +70,24 @@ function getMinBox() {
         y: Math.max.apply(null, coorY)
     }
 
-    //return as strucut 
     return {
         min: min_coords,
         max: max_coords
     }
 }
 
-/*
-get the current image data 
-*/
+
 function getImageData() {
-        //get the minimum bounding box around the drawing 
         const mbb = getMinBox()
 
-        //get image data according to dpi 
+        
         const dpi = window.devicePixelRatio
         const imgData = canvas.contextContainer.getImageData(mbb.min.x * dpi, mbb.min.y * dpi,
                                                       (mbb.max.x - mbb.min.x) * dpi, (mbb.max.y - mbb.min.y) * dpi);
         return imgData
     }
 
-/*
-get the prediction 
-*/
+
 function getFrame() {
     //make sure we have at least two recorded coordinates 
     if (coords.length >= 2) {
@@ -127,9 +109,7 @@ function getFrame() {
 
 }
 
-/*
-get the the class names 
-*/
+
 function getClassNames(indices) {
     var outp = []
     for (var i = 0; i < indices.length; i++)
@@ -137,9 +117,7 @@ function getClassNames(indices) {
     return outp
 }
 
-/*
-load the class names 
-*/
+
 function loadDict() {
     $.ajax({
         url: 'http://localhost:8000/AICanvas/model/classes.txt',
@@ -158,16 +136,12 @@ function loadDict() {
     });
 }
 
-/*
-load the class names
-*/
+
 function success(data) {
    
 }
 
-/*
-get indices of the top probs
-*/
+
 function findIndicesOfMax(inp, count) {
     var outp = [];
     for (var i = 0; i < inp.length; i++) {
@@ -182,9 +156,7 @@ function findIndicesOfMax(inp, count) {
     return outp;
 }
 
-/*
-find the top 5 predictions
-*/
+
 function findTopValues(inp, count) {
     var outp = [];
     let indices = findIndicesOfMax(inp, count)
@@ -194,9 +166,7 @@ function findTopValues(inp, count) {
     return outp
 }
 
-/*
-preprocess the data
-*/
+
 function preprocess(imgData) {
     return tf.tidy(() => {
         //convert to a tensor 
@@ -215,44 +185,38 @@ function preprocess(imgData) {
     })
 }
 
-/*
-load the model
-*/
-async function start() {
-    //load the model 
+
+async function run() {
+   
     model = await tf.loadModel('http://localhost:8000/AICanvas/model/model.json')
     
-    //warm up 
+    
     model.predict(tf.zeros([1, 28, 28, 1]))
     
-    //allow drawing on the canvas 
+   
     allowDrawing()
     
-    //load the class names
+   
     await loadDict()
 }
 
-/*
-allow drawing on canvas
-*/
+
 function allowDrawing() {
     canvas.isDrawingMode = 1;
     document.getElementById('status').innerHTML = 'Model Loaded';
     $('button').prop('disabled', false);
-    var slider = document.getElementById('myRange');
-    slider.oninput = function() {
-        canvas.freeDrawingBrush.width = this.value;
-    };
+    // var slider = document.getElementById('myRange');
+    // slider.oninput = function() {
+    //     canvas.freeDrawingBrush.width = this.value;
+   // };
 }
 
-/*
-clear the canvs 
-*/
+
 function erase() {
     canvas.clear();
     canvas.backgroundColor = '#ffffff';
     coords = [];
 }
 
-//start the script 
-start();
+
+run();

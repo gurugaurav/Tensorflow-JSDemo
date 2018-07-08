@@ -1,4 +1,12 @@
-.slider {
+
+#heading{
+    text-align: center;
+    background: #00000012;
+    box-shadow: -1px -1px 20px 0px #070707eb;
+    background-color: white;
+}
+
+/*.slider {
     -webkit-appearance: none;
     width: 230px;
     height: 1px;
@@ -31,3 +39,4 @@
     background: #007AFF;
     cursor: pointer;
 }
+*/

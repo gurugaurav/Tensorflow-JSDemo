@@ -10,16 +10,15 @@
 <!-- css pie -->
 <link rel="stylesheet" href="pie.css">
 
-<!-- jQuery library -->
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-<!-- Popper JS -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 
-<!-- Latest compiled JavaScript -->
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 
-<!-- TensorFlow.js script -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
 	
 <!-- canvas script -->
@@ -33,11 +32,10 @@
 	
 </head>
 <body>
-<nav class="navbar navbar-expand-sm bg-light navbar-light">
-  <!-- Brand/logo -->
-  <a class="navbar-brand" href="#"><h1>SKETCH<small>ER</small></h1></a>
-  </nav>
+	<div id="heading"><h1 id="heading">AICanvas</h1>
+</div>
 <div class="container-fluid"> 
+
 
 </div>
 
@@ -46,7 +44,7 @@
 <h4 id ='status' >Loading Model... </h4>	  
 <canvas id="canvas" width="300" height="300" class="canvas" style="border:1px solid #b9bfc9;margin-top:25px;"></canvas>
 <div class="btn-group" style = 'margin-top:40px; '>
-<input type="range" min="5" max="20" value="10" class="slider" id="myRange" style ='margin-top:20px;'>
+<!-- <input type="range" min="5" max="20" value="10" class="slider" id="myRange" style ='margin-top:20px;'> -->
 <button type="button" class="btn btn-outline-primary" onclick ='erase()' style ='margin-left:10px;' disabled>Clear</button>
     </div>   
 </div>
@@ -57,29 +55,30 @@
     </div>
     <ul class="pieID legend">
       <li>
-        <em id = "sym1"></em>
+        <em id = "pred_class1"></em>
         <span id = "prob1" ></span>
       </li>
       <li>
-        <em id = "sym2"></em>
+        <em id = "pred_class2"></em>
         <span id = "prob2"></span>
       </li>
       <li>
-        <em id = "sym3"></em>
+        <em id = "pred_class3"></em>
         <span id = "prob3"></span>
       </li>
       <li>
-        <em id = "sym4"></em>
+        <em id = "pred_class4"></em>
         <span id = "prob4"></span>
       </li>
       <li>
-        <em id = "sym5"></em>
+        <em id = "pred_class5"></em>
         <span id = "prob5"></span>
       </li>
     </ul>
   </section>
 </div>
 </div>  
+<hr>
 </body>
 <script src="pie.js"></script>
 </html>
